@@ -16,7 +16,7 @@
 ## Installation
 
 - Here are the installation process :
-  - [1] Here is the repo for this project:
+  - [1] Here is the repo for this project: https://github.com/thalim-glam/book-search-mern
   - [2] Here is the deployed link : 
   - [3] To create this project I used VSCode and "VITE 4.4.1"
   - [4] I have included all the necessary dependencies inside "package.json". 
@@ -63,8 +63,8 @@ THEN I am presented with text or icon links to the developer’s GitHub and Link
 ## User Instruction
 
   - Click here for deployed link : 
-  - Click here for the repository: 
-  - Click here for Readme file: 
+  - Click here for the repository: https://github.com/thalim-glam/book-search-mern
+  - Click here for Readme file: https://github.com/thalim-glam/book-search-mern/blob/main/README.md 
   - For convenience install react developer tool extension.
   - Sample screenshots :
     - Screenshot of Aboutme ![Screenshot of aboutme](./src/assets/Aboutme.jpg)
