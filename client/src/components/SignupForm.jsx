@@ -12,7 +12,7 @@ const SignupForm = () => {
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
-
+const [addUser, {loading}] = useMutation(ADD_USER);
 
   //--------------------------------------------------------
   const handleInputChange = (event) => {
@@ -31,7 +31,7 @@ const SignupForm = () => {
     }
 
     try {
-      const response = await createUser(userFormData);
+      const response = await addUser(userFormData);
 
       if (!response.ok) {
         throw new Error('something went wrong!');
@@ -51,6 +51,9 @@ const SignupForm = () => {
       password: '',
     });
   };
+if (loading){
+  return <div> Loading ...</div>
+}
 
   return (
     <>
