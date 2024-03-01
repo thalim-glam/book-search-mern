@@ -1,4 +1,4 @@
-// import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Col,
@@ -7,12 +7,13 @@ import {
   Card,
   Row
 } from 'react-bootstrap';
+import { useMutation } from '@apollo/client';
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
-import { useMutation } from '@apollo/client';
-import { SAVE_BOOK } from '../utils/mutations';
+
+import { SAVE_BOOK } from '../utils/mutations'
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -23,8 +24,8 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
-  // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
+  const [saveBook, { error, data }] = useMutation(SAVE_BOOK)
+
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
@@ -52,6 +53,7 @@ const SearchBooks = () => {
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
+        link: ''
       }));
 
       setSearchedBooks(bookData);
@@ -60,8 +62,6 @@ const SearchBooks = () => {
       console.error(err);
     }
   };
-  // Use the saveBook mutation to save book 
-  const [saveBook] = useMutation(SAVE_BOOK);
 
   // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
@@ -75,10 +75,13 @@ const SearchBooks = () => {
       return false;
     }
 
+    console.log("THis is my data", bookToSave)
     try {
-      const response = await saveBook(bookToSave, token);
+      const { data } = await saveBook({
+        variables: { bookInput: bookToSave }
+      });
 
-      if (!response.ok) {
+      if (!data) {
         throw new Error('something went wrong!');
       }
 
