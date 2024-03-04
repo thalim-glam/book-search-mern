@@ -3,71 +3,100 @@ const { User, Book } = require('../models');
 const { AuthenticationError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
 
-const resolvers = {
+//---------------------------------------------------- QUERY -----------------------------
+const Resolvers = {
   Query: {
-    me: async (parent, args, context) => {
-      if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id })
-          .select('-__v -password')
-          .populate('savedBooks');
+    me: async (parent, args, { user }) => {
+      try {
+        const foundUser = await User.findOne({
+          $or: [{ _id: user.id }, { username: user.username }],
+        });
 
-        return userData;
+        if (!foundUser) {
+          return { message: '400 ERROR: Could not found the user id!' };
+        }
+        return foundUser;
+
+      } catch (error) {
+        console.log(error);
+        return { message: '400 ERROR', error };
+
       }
-
-      throw new AuthenticationError('Not logged in');
-    },
+    }
   },
   Mutation: {
+    //------------------- This related to login form and helps to login user------------------------------
     login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email });
+      try {
+        const user = await User.findOne({ email });// find by email
+        if (!user) {
+          throw AuthenticationError;
+        };
 
-      if (!user) {
-        throw new AuthenticationError('Incorrect credentials');
+        const correctPw = await user.isCorrectPassword(password);
+
+        if (!correctPw) {
+          throw AuthenticationError;
+        }
+        const token = signToken(user);
+        return { token, user };
+      } catch (error) {
+        console.log(error);
+        return { message: '400 ERROR', error };
       }
-
-      const correctPw = await user.isCorrectPassword(password);
-
-      if (!correctPw) {
-        throw new AuthenticationError('Incorrect credentials');
-      }
-
-      const token = signToken(user);
-      return { token, user };
     },
 
-    addUser: async (parent, args) => {
-      const user = await User.create(args);
-      const token = signToken(user);
-
-      return { token, user };
+    // --------------------------- This part goes to sign up page and creates user ------------------------
+    addUser: async (parent, { username, email, password }) => {
+      try {
+        const user = await User.create({ username, email, password });
+        if (!user) {
+          return { message: '400 ERROR, Something is wrong!' };
+        }
+        const token = signToken(user);
+        return { token, user };
+      } catch (error) {
+        console.log(error);
+        return { message: '400 ERROR', error };
+      }
     },
 
-    removeBook: async (parent, { bookId }, context) => {
-      if (context.user) {
-        const updatedBooks = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $pull: { savedBooks: { bookId } } },
+
+    //------------------------------- This part helps to remove book----------------------------
+    removeBook: async (parent, { bookId }, { user }) => {
+      console.log(bookId)
+      try {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: user._id },
+          { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
-
-        return updatedBooks;
+        if (!updatedUser) {
+          return { message: "Couldn't find user with this id!" };
+        }
+        return updatedUser;
+      } catch (error) {
+        console.log(error);
+        return { message: '400 ERROR', error };
       }
-    },
-
-    saveBook: async (parent, { bookToSave }, context) => {
-      if (context.user) {
-        const updatedBooks = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $addToSet: { savedBooks: bookToSave } },
-          { new: true }
-        ).populate('savedBooks');
-
-        return updatedBooks;
-      }
-
-      throw new AuthenticationError('You need to be logged in!');
-    },
+    }
   },
-};
 
-module.exports = resolvers;
+  // ------------------------ Saving books------------------------------
+  saveBook: async (parent, { bookInput }, context) => {
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: context.user.id },
+        { $addToSet: { savedBooks: bookInput } },
+        { new: true, runValidators: true }
+      );
+      return updatedUser;
+
+    } catch (error) {
+      console.log(error);
+      return { message: '400 ERROR', error };
+
+    }
+  }
+}
+module.exports = Resolvers;
