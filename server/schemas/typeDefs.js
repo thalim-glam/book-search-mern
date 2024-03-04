@@ -1,13 +1,4 @@
 module.exports = `
-type Query {
-  me: User
-}
-type Mutation {
-  login(email: String!, password: String!): Auth
-  addUser(username: String!, email: String!, password: String!): Auth
-  saveBook(bookInput: BookInput!): User
-  removeBook(bookId: String!): User
-}
 
 input BookInput {
   authors: [String]
@@ -23,7 +14,7 @@ type User {
   username: String
   email: String
   bookCount: Int
-  saveBooks: [Book]
+  savedBooks: [Book]
 }
 
 type Book {
@@ -39,4 +30,16 @@ type Auth {
   token: ID!
   user: User
 }
+
+type Query {
+  me: User
+}
+
+type Mutation {
+  login(email: String!, password: String!): Auth
+  addUser(username: String!, email: String!, password: String!): Auth
+  savedBook(bookInput: BookInput!): User
+  removeBook(bookId: String!): User
+}
+
 `
