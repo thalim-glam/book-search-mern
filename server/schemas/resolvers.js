@@ -7,7 +7,7 @@ const Resolvers = {
     me: async (parent, args, context) => {
       if(context.user) {
         const foundUser = await User.findOne({
-            _id: context.user.id 
+            _id: context.user._id 
       });
 
       if (!foundUser) {
@@ -76,8 +76,8 @@ addUser: async (parent, { username, email, password }) => {
     }
   },
     // ------------------------ Saving books------------------------------
-    saveBook: async (parent, { bookInput }, context) => {
-      try {
+    savedBook: async (parent, { bookInput }, context) => {
+      if(context.user){
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
           { $addToSet: { savedBooks: bookInput } },
@@ -85,10 +85,9 @@ addUser: async (parent, { username, email, password }) => {
         );
         return updatedUser;
 
-      } catch (error) {
-        console.log(error);
-        return { message: '400 ERROR', error };
-
+      } else {
+        throw AuthenticationError;
+  
       }
     },
   },
