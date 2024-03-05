@@ -102,7 +102,7 @@ Thanks a lot to Luigi(Instructor) and TA Daniel and TA Clarence , class recordin
  - npm create vite@4.4.1 project_name
  - cd project_name
  - npm install
- - npm run dev
+ - npm run develop
  - r = restart
  - u = show server url
  - o = open in browser
