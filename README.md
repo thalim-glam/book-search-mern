@@ -67,10 +67,10 @@ THEN I am presented with text or icon links to the developer’s GitHub and Link
   - Click here for Readme file: https://github.com/thalim-glam/book-search-mern/blob/main/README.md 
   - For convenience install react developer tool extension.
   - Sample screenshots :
-    - Screenshot of Aboutme ![Screenshot of aboutme](./src/assets/Aboutme.jpg)
-    - Screenshot of Projects ![Screenshot of projects](./src/assets/Projects.jpg)
-    - Screenshot of Contactme ![Screenshot of contactme](./src/assets/Contactme.jpg)
-    - Screenshot of Resume ![Screenshot of resume](./src/assets/Resume.jpg)
+    - Screenshot of VScode ![Screenshot of VSCode](./images/Screenshot.png)
+    - Screenshot of Search books ![Screenshot of search books](./images/Searchbooks.png)
+    - Screenshot of Saved books ![Screenshot of saved books](./images/Savebook.png)
+    - Screenshot of My saved books ![Screenshot of my saved books](./images/MysavedBooks.png)
 
     
 ## Command line code
