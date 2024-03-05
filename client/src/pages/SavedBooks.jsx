@@ -47,9 +47,11 @@ const SavedBooks = () => {
     }
   };
 
-  if (loading) {
+  if (!userData.savedBooks) {
     return <h2>LOADING...</h2>;
   }
+
+  //need  useEffect here to refresh background here
 
   return (
     <>
